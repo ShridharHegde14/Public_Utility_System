@@ -17,4 +17,5 @@ RUN chmod +x mvnw
 RUN ./mvnw clean package -DskipTests
 
 # Run the JAR file
-CMD ["java", "-jar", "target/*.jar"]
+CMD ["java", "-jar", "target/requestmanager-0.0.1-SNAPSHOT.jar"]
+
