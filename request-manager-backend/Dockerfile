@@ -1,12 +1,20 @@
-# Stage 1: Build the JAR
-FROM maven:3.9.6-eclipse-temurin-17 AS build
-WORKDIR /app
-COPY . .
-RUN mvn clean package -DskipTests
+# Use OpenJDK 17 as base image
+FROM eclipse-temurin:17-jdk-alpine
 
-# Stage 2: Run the JAR
-FROM eclipse-temurin:17-jdk
+# Set working directory in container
 WORKDIR /app
-COPY --from=build /app/target/*.jar app.jar
-EXPOSE 8080
-ENTRYPOINT ["java","-jar","app.jar"]
+
+# Copy Maven wrapper and project files
+COPY mvnw .
+COPY .mvn .mvn
+COPY pom.xml .
+COPY src src
+
+# Make Maven wrapper executable
+RUN chmod +x mvnw
+
+# Build the application without running tests
+RUN ./mvnw clean package -DskipTests
+
+# Run the JAR file
+CMD ["java", "-jar", "target/*.jar"]
